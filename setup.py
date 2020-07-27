@@ -11,8 +11,11 @@ setup(
   # download_url = 'https://github.com/jamarshon/chesspdftofen/archive/0.1.tar.gz',
   keywords = ['chess', 'computervision'],
   install_requires=[
+          'matplotlib',
           'numpy',
           'opencv-python',
+          'pdf2image',
+          'pillow',
       ],
   classifiers=[
     'Development Status :: 3 - Alpha',

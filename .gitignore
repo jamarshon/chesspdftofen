@@ -4,3 +4,4 @@ data/*
 dist/*
 SECRET
 *.pyc
+chesspdftofen/.ipynb_checkpoints/*

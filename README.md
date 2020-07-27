@@ -3,14 +3,16 @@ Annotates PDF with comments including FEN. Runs completely locally and is open s
 
 ## Setup
 ```bash
-# Install the package (only needs to be done once)
+# Install the package and dependencies (only needs to be done once)
+conda install -c conda-forge poppler
 pip install chesspdftofen
+
 # Run the package/GUI
 python -c "import chesspdftofen; chesspdftofen.run()"
 
 ``` 
 
-## Miscellaneous Developer Notes
+## Miscellaneous Notes for Contributors and Developers
 ```bash
 # Create a conda environment (optional)
 conda create --name chesspdftofen python=3.8 --yes

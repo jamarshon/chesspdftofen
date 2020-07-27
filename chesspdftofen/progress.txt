@@ -1,0 +1,7 @@
+we dont need adaptive threshold because images are uniform so simple threshold
+
+check largest contour for square using hough and square
+-problem is squares might not be connected
+
+png for 23 was 12:07 to 12:21 using 3 threads
+jpg for 23 was 12:53 to 12:56 using 3 threads
