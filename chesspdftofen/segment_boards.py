@@ -53,7 +53,7 @@ def get_contours(th2):
   buf = 0
   min_area = 64*25*25
   h_max, w_max = th2.shape
-  
+
   for i, cnt in enumerate(contours):
     area = cv2.contourArea(cnt)
     if not (min_area <= area):
@@ -91,7 +91,7 @@ def hough_lines(potential_board, lap2, dim):
   min_line_length = max(thres // 2, 20)
   max_line_gap = max(thres // 5, 5)
 
-  print('dim,thres,min_line_length,max_line_gap',dim,thres,min_line_length,max_line_gap)
+  # print('dim,thres,min_line_length,max_line_gap',dim,thres,min_line_length,max_line_gap)
 
   linesP = cv2.HoughLinesP(lap2, rho=1, theta=np.pi / 180, threshold=thres, lines=None, 
                            minLineLength=min_line_length, maxLineGap=max_line_gap)
@@ -193,10 +193,10 @@ def segment_boards(im):
 
     # draw_intersections(potential_board, pts)
     # draw_lines(potential_board, hls, vls)
-    draw_centers(potential_board, centers)
+    # draw_centers(potential_board, centers)
     matching_points = get_matching_points(centers, dim)
 
-    print('matching_points', matching_points)
+    # print('segment_boards matching_points', matching_points)
     if matching_points > 0.7 * 81:
       boards.append(rect)
 

@@ -5,7 +5,14 @@ import os
 from pdf2image import convert_from_path
 import tempfile
 
-from segment_boards import segment_boards
+try:
+    import importlib.resources as pkg_resources
+except ImportError:
+    # Try backported to PY<37 `importlib_resources`.
+    import importlib_resources as pkg_resources
+
+from . import data
+from .segment_boards import segment_boards
 
 def sbw(im):
   f = plt.figure()
@@ -32,13 +39,18 @@ def convert_pdf_to_image():
 
 # image_path = 'data\\dev\\23.jpg'
 # image_path = 'data\\dev\\23.png'
-image_path = 'data\\dev\\1n.jpg'
-# image_path = 'data\\dev\\1n.png'
-for image_path in ['data\\dev\\23.jpg', 'data\\dev\\23.png', 'data\\dev\\1n.jpg', 'data\\dev\\1n.png']:
-  im = cv2.imread(image_path, 0)
-  boards = segment_boards(im)
+# image_path = 'data\\dev\\1n.jpg'
+# # image_path = 'data\\dev\\1n.png'
+# for image_path in ['data\\dev\\23.jpg', 'data\\dev\\23.png', 'data\\dev\\1n.jpg', 'data\\dev\\1n.png']:
+#   im = cv2.imread(image_path, 0)
+#   boards = segment_boards(im)
 
-plt.show()
+# plt.show()
+
+
 def run():
-  pass
-  # process_jpeg()
+  # with pkg_resources.path(data, 'test.dat') as f:
+    # print(f)
+
+if __name__ == "__main__":
+  run()
