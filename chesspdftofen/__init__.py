@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import os
 from pdf2image import convert_from_path
 from PIL import Image
+from PyPDF2 import PdfFileWriter, PdfFileReader
 import re
 import tempfile
 # import tkinter as tk
@@ -14,7 +15,7 @@ import torchvision
 
 from .cnn import get_model
 from .segment_boards import segment_boards
-from .pdf_edit import pdf_edit, NoteText
+from .pdf_helper import create_annotation, add_annotation_to_page
 
 def sbw(im):  
   f = plt.figure()
@@ -108,8 +109,14 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=50):
     # torchvision.transforms.Normalize((0.5, ), (0.5, ))
   ])
 
-  pdf = pdf_edit.PdfAnnotator(file_path)
-  x1, y1, x2, y2 = 612, 792, 612, 792
+  pdf_input = PdfFileReader(open(file_path, 'rb'), strict=False)
+  pdf_output = PdfFileWriter()
+  pdf_output.appendPagesFromReader(pdf_input)
+
+  num_pages = pdf_output.getNumPages()
+  assert num_pages > 0
+  page1 = pdf_output.getPage(0)
+  _, _, pdf_w, pdf_h = page1.mediaBox
 
   with torch.no_grad():
     with tempfile.TemporaryDirectory() as output_path:
@@ -137,9 +144,8 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=50):
         page_num = int(page_num.group(1)) - 1
 
         page_im = cv2.imread(im_path, 0)
+        page_im_h, page_im_w = page_im.shape
         boards = segment_boards(page_im)
-
-        fen_strs = []
 
         for board in boards:
           ymin, ymax, xmin, xmax, _, _ = board
@@ -155,18 +161,14 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=50):
           outputs = net(images)
           _, predicted = torch.max(outputs.data, 1)
           
-          fen_strs.append(get_fen_str(predicted))
+          fen_str  = get_fen_str(predicted)
 
-        if len(fen_strs) > 0:
-          pdf.add_annotation(
-            'note',
-            pdf_edit.Location(x1=x1, y1=y1, x2=x2, y2=y2, page=page_num),
-            pdf_edit.Appearance(
-                fill=[0.4, 0, 0],
-                content='\n'.join(fen_strs),
-                text_name='FEN',
-            ))
-  pdf.write(output_file_path)
+          annotation = create_annotation(xmax / page_im_w * pdf_w, (1 - ymin / page_im_h) * pdf_h, {
+            'author': '',
+            'contents': fen_str
+          })
+          add_annotation_to_page(annotation, pdf_output.getPage(page_num), pdf_output)
+  pdf_output.write(open(output_file_path, 'wb'))
 
 if __name__ == "__main__":
   run()

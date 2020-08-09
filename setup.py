@@ -18,7 +18,7 @@ setup(
           'opencv-python',
           # 'opencv-contrib-python',
           'pdf2image',
-          'pdf-annotate',
+          'PyPDF2',
           'pillow',
           # 'scipy',
           # 'sklearn',
