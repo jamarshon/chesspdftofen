@@ -71,9 +71,9 @@ def get_contours(th2):
       # print('x,y,w,h', x, y, w, h)
       continue
     
-    rect = (max(y - buf, 0), min(y + h + buf, h_max), 
+    rect = [max(y - buf, 0), min(y + h + buf, h_max), 
       max(x - buf, 0), min(x + w + buf, w_max),
-      w, h)
+      w, h]
     filtered_contours.append(cnt)
     filtered_rects.append(rect)
   return filtered_contours, filtered_rects
@@ -189,7 +189,10 @@ def segment_boards(im):
 
     nclusters = 81
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-    _, _, centers = cv2.kmeans(np.float32(pts), nclusters, None, criteria, 10, cv2.KMEANS_PP_CENTERS)
+    if len(pts) < nclusters:
+      centers = np.array(pts)
+    else:
+      _, _, centers = cv2.kmeans(np.float32(pts), nclusters, None, criteria, 10, cv2.KMEANS_PP_CENTERS)
 
     # draw_intersections(potential_board, pts)
     # draw_lines(potential_board, hls, vls)
@@ -198,6 +201,12 @@ def segment_boards(im):
 
     # print('segment_boards matching_points', matching_points)
     if matching_points > 0.7 * 81:
-      boards.append(rect)
+      min_centers = centers.min(axis=0).astype(np.int32)
+      max_centers = centers.max(axis=0).astype(np.int32)
+      # get the bounding box of centers
+      bbox = [rect[0] + min_centers[0], rect[0] + max_centers[0], 
+        rect[2] + min_centers[1], rect[2] + max_centers[1], rect[4], rect[5]]
+      # print('r', rect, bbox)
+      boards.append(bbox)
 
   return boards

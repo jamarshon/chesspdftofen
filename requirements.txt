@@ -3,8 +3,12 @@ importlib-resources=3.0.0
 matplotlib=3.3.0
 numpy==1.19.1
 opencv-python==4.3.0.36
+# opencv-contrib-python==4.3.0.36
 pdf2image=1.13.1
+pdf-annotate==0.11.0
 pillow=7.2.0
-scikit-learn==0.23.1
-scipy==1.5.2
+# scikit-learn==0.23.1
+# scipy==1.5.2
+torch===1.6.0  --find-links https://download.pytorch.org/whl/torch_stable.html
+torchvision===0.7.0  --find-links https://download.pytorch.org/whl/torch_stable.html
 wincertstore==0.2

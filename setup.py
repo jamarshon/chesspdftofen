@@ -5,7 +5,7 @@ setup(
   package_data = {
     'chesspdftofen': ['data/*.dat']
   },
-  version = '0.1.1',
+  version = '0.5.0',
   license='MIT',
   description = 'Annotates PDF with comments including FEN. Runs completely locally and is open source',
   url = 'https://github.com/jamarshon/chesspdftofen',
@@ -16,10 +16,12 @@ setup(
           'matplotlib',
           'numpy',
           'opencv-python',
+          # 'opencv-contrib-python',
           'pdf2image',
+          'pdf-annotate',
           'pillow',
-          'scipy',
-          'sklearn',
+          # 'scipy',
+          # 'sklearn',
       ],
   classifiers=[
     'Development Status :: 3 - Alpha',
