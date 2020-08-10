@@ -16,6 +16,7 @@ import torchvision
 from .cnn import get_model
 from .segment_boards import segment_boards
 from .pdf_helper import create_annotation, add_annotation_to_page
+from .timer import Timer
 
 def sbw(im):  
   f = plt.figure()

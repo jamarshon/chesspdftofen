@@ -7,7 +7,7 @@ setup(
   },
   version = '0.5.0',
   license='MIT',
-  description = 'Annotates PDF with comments including FEN. Runs completely locally and is open source',
+  description = 'Annotates PDF with comments containing FEN of detected chessboards. Runs completely locally as an offline process with possible GPU support and is open source',
   url = 'https://github.com/jamarshon/chesspdftofen',
   # download_url = 'https://github.com/jamarshon/chesspdftofen/archive/0.1.tar.gz',
   keywords = ['chess', 'computervision'],
