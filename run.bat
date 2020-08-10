@@ -1,1 +1,1 @@
-python -c "import chesspdftofen; chesspdftofen.run('data/yasser.pdf', 'data/yasser2.pdf')"
+python -c "import chesspdftofen; chesspdftofen.run('data/aagard.pdf', 'data/aagard2.pdf', build_training_set=False)"

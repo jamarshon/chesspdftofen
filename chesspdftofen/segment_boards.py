@@ -201,12 +201,12 @@ def segment_boards(im):
 
     # print('segment_boards matching_points', matching_points)
     if matching_points > 0.7 * 81:
-      min_centers = centers.min(axis=0).astype(np.int32)
-      max_centers = centers.max(axis=0).astype(np.int32)
-      # get the bounding box of centers
-      bbox = [rect[0] + min_centers[0], rect[0] + max_centers[0], 
-        rect[2] + min_centers[1], rect[2] + max_centers[1], rect[4], rect[5]]
-      # print('r', rect, bbox)
-      boards.append(bbox)
+      # min_centers = centers.min(axis=0).astype(np.int32)
+      # max_centers = centers.max(axis=0).astype(np.int32)
+      # # get the bounding box of centers
+      # bbox = [rect[0] + min_centers[0], rect[0] + max_centers[0], 
+      #   rect[2] + min_centers[1], rect[2] + max_centers[1], rect[4], rect[5]]
+      # boards.append(bbox)
+      boards.append(rect)
 
   return boards

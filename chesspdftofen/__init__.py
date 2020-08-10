@@ -61,8 +61,23 @@ def pil_loader(path):
     img = Image.open(f)
     return img.convert('RGB')
 
-# piecenames = ['BlackBishop', 'BlackKing', 'BlackKnight', 'BlackPawn', 'BlackQueen', 'BlackRook', 'BlackSpace', 'WhiteBishop', 'WhiteKing', 'WhiteKnight', 'WhitePawn', 'WhiteQueen', 'WhiteRook', 'WhiteSpace']
+piecenames_long = ['BlackBishop', 'BlackKing', 'BlackKnight', 'BlackPawn', 'BlackQueen', 'BlackRook', 'BlackSpace', 'WhiteBishop', 'WhiteKing', 'WhiteKnight', 'WhitePawn', 'WhiteQueen', 'WhiteRook', 'WhiteSpace']
 piecenames = ['bb', 'bk', 'bn', 'bp', 'bq', 'br', 'em', 'wb', 'wk', 'wn', 'wp', 'wq', 'wr', 'em']
+
+training_idx = 0
+def create_training_set(tensors, predicted):
+  """
+  tensors (List[tensor]): image of each cell
+  predicted (tensor(64,1)): predicted value of each cell
+  """
+  global training_idx
+  output_dir = 'data/out/aagard'
+  for i, tensor in enumerate(tensors):
+    np_arr = (tensor * 255).view(64, 64, 1).numpy().astype(np.uint8)
+    piece = piecenames_long[predicted[i]]
+    output_path = os.path.join(output_dir, piece, '%07d.png' % (training_idx, ))
+    cv2.imwrite(output_path, np_arr)
+    training_idx += 1
 
 def get_fen_str(predicted):
   with io.StringIO() as s:
@@ -89,12 +104,13 @@ def get_fen_str(predicted):
     s.write('%20w%20KQkq%20-%200%201')
     return s.getvalue()
 
-def run(file_path, output_file_path, num_threads=4, num_pages_to_print=50):
+def run(file_path, output_file_path, num_threads=4, num_pages_to_print=10, build_training_set=False):
   r"""
   file_path           (str): Path to the pdf file
   output_path         (str): Path for the output file name
   num_threads         (int, optional): Number of threads to used (recommended less than 4)
   num_pages_to_print  (int, optional): Number of pages to process before printing progress
+  build_training_set  (bool, optional): Used to create training data, should be False otherwise
 
   Example usage
   chesspdftofen.run('data/yasser.pdf', 'data/yasser2.pdf')  
@@ -109,14 +125,18 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=50):
     # torchvision.transforms.Normalize((0.5, ), (0.5, ))
   ])
 
-  pdf_input = PdfFileReader(open(file_path, 'rb'), strict=False)
-  pdf_output = PdfFileWriter()
-  pdf_output.appendPagesFromReader(pdf_input)
+  print('Reading PDF ...')
+  if not build_training_set:
+    pdf_input = PdfFileReader(open(file_path, 'rb'), strict=False)
+    pdf_output = PdfFileWriter()
+    pdf_output.appendPagesFromReader(pdf_input)
 
-  num_pages = pdf_output.getNumPages()
-  assert num_pages > 0
-  page1 = pdf_output.getPage(0)
-  _, _, pdf_w, pdf_h = page1.mediaBox
+    num_pages = pdf_output.getNumPages()
+    assert num_pages > 0
+    page1 = pdf_output.getPage(0)
+    _, _, pdf_w, pdf_h = page1.mediaBox
+    pdf_w = pdf_w.as_numeric()
+    pdf_h = pdf_h.as_numeric()
 
   with torch.no_grad():
     with tempfile.TemporaryDirectory() as output_path:
@@ -128,15 +148,15 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=50):
         grayscale=True,
         thread_count=num_threads)
 
-      print('Converting %s' % (file_path,))
+      print('Converting %s ...' % (file_path,))
       num_pages = len(im_paths)
       
       for i, im_path in enumerate(im_paths):
         if i % num_pages_to_print == 0:
-          print('Completed %d / %d' % (i, num_pages))
+          print('Completed processing for %d / %d ...' % (i, num_pages))
 
-        if i > 50:
-          break
+        # if i > 50:
+          # break
 
         im_path_base, im_path_ext = os.path.splitext(im_path)
         page_num = re.match('.*?([0-9]+)$', im_path_base)
@@ -163,12 +183,18 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=50):
           
           fen_str  = get_fen_str(predicted)
 
-          annotation = create_annotation(xmax / page_im_w * pdf_w, (1 - ymin / page_im_h) * pdf_h, {
-            'author': '',
-            'contents': fen_str
-          })
-          add_annotation_to_page(annotation, pdf_output.getPage(page_num), pdf_output)
-  pdf_output.write(open(output_file_path, 'wb'))
+          if not build_training_set:
+            annotation = create_annotation(xmax / page_im_w * pdf_w, (1 - ymin / page_im_h) * pdf_h, {
+              'author': '',
+              'contents': fen_str
+            })
+            add_annotation_to_page(annotation, pdf_output.getPage(page_num), pdf_output)
+          else:
+            create_training_set(tensors, predicted)
+
+  if not build_training_set:         
+    pdf_output.write(open(output_file_path, 'wb'))
+  print('Done!')
 
 if __name__ == "__main__":
   run()

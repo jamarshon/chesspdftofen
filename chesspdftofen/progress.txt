@@ -3192,3 +3192,32 @@ total 12769 12803
 [0.98895028, 0.99435028, 1.        , 0.99613527, 0.968     ,
        1.        , 0.99977226, 0.98979592, 0.97740113, 0.98522167,
        0.99709865, 0.96992481, 0.98892989, 0.99931865]
+
+
+exp_cbnn1_d0.5_0.4_bn_rc
+device cpu
+Net(
+  (pool): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (conv1): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1))
+  (batch1): BatchNorm2d(6, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (conv2): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+  (batch2): BatchNorm2d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (drop1): Dropout(p=0.5, inplace=False)
+  (fc1): Linear(in_features=2704, out_features=120, bias=True)
+  (drop2): Dropout(p=0.4, inplace=False)
+  (fc2): Linear(in_features=120, out_features=84, bias=True)
+  (fc3): Linear(in_features=84, out_features=14, bias=True)
+)
+7799 [10,   779] loss: 0.005
+torchvision.transforms.Grayscale(),
+                                            torchvision.transforms.Resize((64, 64)),
+                                            GaussianSmoothing([0, 0.5]),
+                                            torchvision.transforms.RandomApply([
+                                              torchvision.transforms.RandomResizedCrop((64, 64), scale=(0.8, 1.0), ratio=(0.9, 1.1)),
+                                            ], p=0.75),
+                                            torchvision.transforms.ToTensor(),
+#                                             torchvision.transforms.RandomErasing(p=0.30, scale=(0.05, 0.2)),
+#                                             torchvision.transforms.Normalize((0.5, ), (0.5, ))
+])
+
+7799 [10,   779] loss: 0.005

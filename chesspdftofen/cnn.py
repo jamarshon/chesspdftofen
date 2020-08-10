@@ -15,10 +15,10 @@ class Net(nn.Module):
     self.pool = nn.MaxPool2d(2, 2)
     
     self.conv1 = nn.Conv2d(1, 6, 5)
-    # self.batch1 = nn.BatchNorm2d(6)
-
     self.conv2 = nn.Conv2d(6, 16, 5)
-    # self.batch2 = nn.BatchNorm2d(16)
+    
+    self.batch1 = nn.BatchNorm2d(6)
+    self.batch2 = nn.BatchNorm2d(16)
     
     self.drop1 = nn.Dropout(0.5)
     self.fc1 = nn.Linear(16 * 13 * 13, 120)
@@ -29,10 +29,10 @@ class Net(nn.Module):
 
   def forward(self, x):
     # conv
-    # x = self.pool(self.batch1(F.relu(self.conv1(x))))
-    # x = self.pool(self.batch2(F.relu(self.conv2(x))))
-    x = self.pool(F.relu(self.conv1(x)))
-    x = self.pool(F.relu(self.conv2(x)))
+    x = self.pool(self.batch1(F.relu(self.conv1(x))))
+    x = self.pool(self.batch2(F.relu(self.conv2(x))))
+    # x = self.pool(F.relu(self.conv1(x)))
+    # x = self.pool(F.relu(self.conv2(x)))
     
     x = x.view(-1, 16 * 13 * 13)
     
@@ -49,8 +49,8 @@ def get_model():
   print('Model inference device', device)
   net = Net()
 
-  path = 'model_exp_cbnn1_last7800.pth'
-  # path = 'model_exp_cbnn1_last_bn7800.pth'
+  # path = 'model_exp_cbnn1_last7800.pth'
+  path = 'model_exp_cbnn1_last_bn7800.pth'
   with pkg_resources.path(data, path) as f:
     net.load_state_dict(torch.load(f))
 
