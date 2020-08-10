@@ -50,7 +50,7 @@ def get_model():
   net = Net()
 
   # path = 'model_exp_cbnn1_last7800.pth'
-  path = 'model_exp_cbnn1_last_bn7800.pth'
+  path = 'model_exp_cbnn1_d0.5_0.4_bn_rc23400.pth'
   with pkg_resources.path(data, path) as f:
     net.load_state_dict(torch.load(f))
 

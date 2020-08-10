@@ -107,9 +107,9 @@ def get_fen_str(predicted):
 
 def run(file_path, output_file_path, num_threads=4, num_pages_to_print=10, build_training_set=False):
   r"""
-  file_path           (str): Path to the pdf file
+  file_path           (str): Path to the input pdf file
   output_path         (str): Path for the output file name
-  num_threads         (int, optional): Number of threads to used (recommended less than 4)
+  num_threads         (int, optional): Number of threads to use (recommended less than 4)
   num_pages_to_print  (int, optional): Number of pages to process before printing progress
   build_training_set  (bool, optional): Used to create training data, should be False otherwise
 
