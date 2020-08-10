@@ -17,4 +17,7 @@ git push --delete origin 0.2
 
 # run file
 python -m chesspdftofen.__init__
+
+conda env remove --name chesstestenv
+conda create --name chesstestenv python=3.8 --yes
 ```

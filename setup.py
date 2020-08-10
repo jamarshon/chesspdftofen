@@ -3,7 +3,7 @@ setup(
   name = 'chesspdftofen',
   packages = ['chesspdftofen', 'chesspdftofen.data'],
   package_data = {
-    'chesspdftofen': ['data/*.dat']
+    'chesspdftofen': ['data/*.pth']
   },
   version = '0.5.0',
   license='MIT',
