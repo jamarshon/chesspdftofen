@@ -44,9 +44,9 @@ class Net(nn.Module):
     x = self.fc3(x)
     return x
 
-def get_model():
+def get_model(status_fn):
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-  print('Model inference device', device)
+  status_fn('Model inference device ' + str(device))
   net = Net()
 
   # path = 'model_exp_cbnn1_last7800.pth'
@@ -54,5 +54,5 @@ def get_model():
   with pkg_resources.path(data, path) as f:
     net.load_state_dict(torch.load(f))
 
-  print('Model loaded')
+  status_fn('Model loaded')
   return net.eval()

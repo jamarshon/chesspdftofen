@@ -105,18 +105,23 @@ def get_fen_str(predicted):
     s.write('%20w%20KQkq%20-%200%201')
     return s.getvalue()
 
-def run(file_path, output_file_path, num_threads=4, num_pages_to_print=10, build_training_set=False):
+def run(file_path, 
+        output_file_path, 
+        num_threads=4, 
+        num_pages_to_print=10, 
+        build_training_set=False,
+        status_fn=print):
   r"""
   file_path           (str): Path to the input pdf file
   output_path         (str): Path for the output file name
   num_threads         (int, optional): Number of threads to use (recommended less than 4)
   num_pages_to_print  (int, optional): Number of pages to process before printing progress
   build_training_set  (bool, optional): Used to create training data, should be False otherwise
-
+  status_fn           (function, optional): How to handle status updates
   Example usage
   chesspdftofen.run('data/yasser.pdf', 'data/yasser2.pdf')  
   """
-  net = get_model()
+  net = get_model(status_fn)
 
   transform = torchvision.transforms.Compose([
     # torchvision.transforms.Grayscale(),
@@ -126,7 +131,7 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=10, build
     # torchvision.transforms.Normalize((0.5, ), (0.5, ))
   ])
 
-  print('Reading PDF ...')
+  status_fn('Reading PDF ...')
   if not build_training_set:
     pdf_input = PdfFileReader(open(file_path, 'rb'), strict=False)
     pdf_output = PdfFileWriter()
@@ -149,12 +154,12 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=10, build
         grayscale=True,
         thread_count=num_threads)
 
-      print('Converting %s ...' % (file_path,))
+      status_fn('Converting %s ...' % (file_path,))
       num_pages = len(im_paths)
       
       for i, im_path in enumerate(im_paths):
         if i % num_pages_to_print == 0:
-          print('Completed processing for %d / %d ...' % (i, num_pages))
+          status_fn('Completed processing for %d / %d ...' % (i, num_pages))
 
         # if i > 50:
           # break
@@ -195,9 +200,9 @@ def run(file_path, output_file_path, num_threads=4, num_pages_to_print=10, build
 
   if not build_training_set:         
     pdf_output.write(open(output_file_path, 'wb'))
-  print('Done!')
+  status_fn('Done!')
 
 if __name__ == "__main__":
   run()
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'

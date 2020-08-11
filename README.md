@@ -24,6 +24,7 @@ Parameter | Description
 **num_threads** (int, optional) | Number of threads to use (recommended less than 4)
 **num_pages_to_print** (int, optional) | Number of pages to process before printing progress
 **build_training_set** (bool, optional) | Used to create training data, should be False otherwise
+**status_fn** (function, optional) | How to handle status updates
 
 ## Setup
 ### Requirements
