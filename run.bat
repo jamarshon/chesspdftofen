@@ -1,1 +1,1 @@
-python -c "import chesspdftofen; chesspdftofen.run('data/aagard-short.pdf', 'data/aagard-short2.pdf', build_training_set=False, status_fn=lambda x: print('j', x))"
+python -c "import chesspdftofen; [print(status) for status in chesspdftofen.run('data/aagard-short.pdf', 'data/aagard-short2.pdf', build_training_set=False)]"

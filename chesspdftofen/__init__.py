@@ -109,19 +109,20 @@ def run(file_path,
         output_file_path, 
         num_threads=4, 
         num_pages_to_print=10, 
-        build_training_set=False,
-        status_fn=print):
+        build_training_set=False):
   r"""
   file_path           (str): Path to the input pdf file
   output_path         (str): Path for the output file name
   num_threads         (int, optional): Number of threads to use (recommended less than 4)
   num_pages_to_print  (int, optional): Number of pages to process before printing progress
   build_training_set  (bool, optional): Used to create training data, should be False otherwise
-  status_fn           (function, optional): How to handle status updates
   Example usage
   chesspdftofen.run('data/yasser.pdf', 'data/yasser2.pdf')  
   """
-  net = get_model(status_fn)
+  device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+  yield 'Model inference device ' + str(device)
+  net = get_model(device)
+  yield 'Model loaded'
 
   transform = torchvision.transforms.Compose([
     # torchvision.transforms.Grayscale(),
@@ -131,9 +132,10 @@ def run(file_path,
     # torchvision.transforms.Normalize((0.5, ), (0.5, ))
   ])
 
-  status_fn('Reading PDF ...')
+  yield 'Reading PDF ...'
   if not build_training_set:
-    pdf_input = PdfFileReader(open(file_path, 'rb'), strict=False)
+    input_file = open(file_path, 'rb')
+    pdf_input = PdfFileReader(input_file, strict=False)
     pdf_output = PdfFileWriter()
     pdf_output.appendPagesFromReader(pdf_input)
 
@@ -154,12 +156,12 @@ def run(file_path,
         grayscale=True,
         thread_count=num_threads)
 
-      status_fn('Converting %s ...' % (file_path,))
+      yield 'Converting %s ...' % (file_path,)
       num_pages = len(im_paths)
       
       for i, im_path in enumerate(im_paths):
         if i % num_pages_to_print == 0:
-          status_fn('Completed processing for %d / %d ...' % (i, num_pages))
+          yield 'Completed processing for %d / %d ...' % (i, num_pages)
 
         # if i > 50:
           # break
@@ -179,7 +181,7 @@ def run(file_path,
 
           im = Image.fromarray(board_im)
           # im = pil_loader(path)
-          im = transform(im)
+          im = transform(im).to(device)
           dim = 64
           tensors = [im[:, dim*k: dim*(k+1), dim*j: dim*(j+1)] for k in range(8) for j in range(8)]
           images = torch.stack(tensors)
@@ -198,11 +200,14 @@ def run(file_path,
           else:
             create_training_set(tensors, predicted)
 
-  if not build_training_set:         
-    pdf_output.write(open(output_file_path, 'wb'))
-  status_fn('Done!')
+  if not build_training_set:
+    output_file = open(output_file_path, 'wb')
+    pdf_output.write(output_file)
+    output_file.close()
+    input_file.close()
+  yield 'Done!'
 
 if __name__ == "__main__":
   run()
 
-__version__ = '0.5.1'
+__version__ = '0.5.2'

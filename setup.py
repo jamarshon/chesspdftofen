@@ -5,7 +5,7 @@ setup(
   package_data = {
     'chesspdftofen': ['data/*.pth']
   },
-  version = '0.5.1',
+  version = '0.5.2',
   license='MIT',
   description = 'Annotates PDF with comments containing FEN of detected chessboards. Runs completely locally as an offline process with possible GPU support and is open source',
   url = 'https://github.com/jamarshon/chesspdftofen',

@@ -5,9 +5,8 @@ Annotates PDF with comments containing FEN of detected chessboards. Runs complet
 ```python
 import chesspdftofen
 
-chesspdftofen.run(
-  'path/to/input.pdf', 
-  'path/to/output.pdf') 
+for status in chesspdftofen.run('path/to/input.pdf', 'path/to/output.pdf'):
+  print(status)
 ```
 <p align="center">
   <img src="https://github.com/jamarshon/chesspdftofen/blob/master/readme/output.png" alt="Example output" width="600px">
@@ -24,7 +23,6 @@ Parameter | Description
 **num_threads** (int, optional) | Number of threads to use (recommended less than 4)
 **num_pages_to_print** (int, optional) | Number of pages to process before printing progress
 **build_training_set** (bool, optional) | Used to create training data, should be False otherwise
-**status_fn** (function, optional) | How to handle status updates
 
 ## Setup
 ### Requirements
