@@ -18,23 +18,41 @@ def create_annotation(x, y, meta):
     # Table 165 NoZoom
     NameObject("/F"): NumberObject(4),
     NameObject("/Type"): NameObject("/Annot"),
-    NameObject("/Subtype"): NameObject("/Text"),
+    NameObject("/Subtype"): NameObject("/Link"),
+    # NameObject("/Subtype"): NameObject("/Text"),
 
     # Table 170 titlebar
-    NameObject("/T"): TextStringObject(meta["author"]),
-    NameObject("/Contents"): TextStringObject(meta["contents"]),
+    # NameObject("/T"): TextStringObject(meta["author"]),
+    # NameObject("/Contents"): TextStringObject(meta["contents"]),
     
     # Table 164 color, annotation rectangle
     NameObject("/C"): ArrayObject([FloatObject(c) for c in color]),
     NameObject("/Rect"): ArrayObject([
       FloatObject(x),
-      FloatObject(y),
-      FloatObject(x),
+      FloatObject(y-20),
+      FloatObject(x+20),
       FloatObject(y)
     ]),
+
+    # Table 173 link annotation
+    NameObject('/A'): DictionaryObject({
+      # Table 206 uri 
+      NameObject('/S'): NameObject('/URI'),
+      NameObject('/URI'): TextStringObject(meta["contents"])
+    }),
+    # Table 173 invert rect when mouse
+    NameObject('/H'): NameObject('/I'),
+    # table 164 hor corner radius, vert corner radius, border width
+    # dash array table 56
+    NameObject('/Border'): ArrayObject([
+      NameObject(2), 
+      NameObject(2), 
+      NameObject(5), 
+      ArrayObject([NameObject(3)])]),
+
     # 12.5.6.4 text annotation
-    NameObject('/Open'): BooleanObject(False),
-    NameObject('/Name'): NameObject('/Comment'),
+    # NameObject('/Open'): BooleanObject(False),
+    # NameObject('/Name'): NameObject('/Comment'),
   })
 
   return newAnnotation
