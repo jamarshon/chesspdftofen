@@ -210,4 +210,4 @@ def run(file_path,
 if __name__ == "__main__":
   run()
 
-__version__ = '0.5.2'
+__version__ = '0.5.3'

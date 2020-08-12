@@ -1,5 +1,5 @@
 # Chess PDF to FEN
-Annotates PDF with comments containing FEN of detected chessboards. Runs completely locally as an offline process with possible GPU support and is open source
+Annotates PDF with comments containing FEN of detected chessboards. Runs completely locally as an offline process with possible GPU support and is open source. This is used to power [chesspdftofen.com](http://www.chesspdftofen.com/).
 
 ## Usage
 ```python
