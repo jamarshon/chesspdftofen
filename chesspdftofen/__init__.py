@@ -192,11 +192,12 @@ def run(file_path,
           fen_str  = get_fen_str(predicted)
 
           if not build_training_set:
-            annotation = create_annotation(xmax / page_im_w * pdf_w, (1 - ymin / page_im_h) * pdf_h, {
+            annotation1, annotation2 = create_annotation(xmax / page_im_w * pdf_w, (1 - ymin / page_im_h) * pdf_h, {
               'author': '',
               'contents': fen_str
             })
-            add_annotation_to_page(annotation, pdf_output.getPage(page_num), pdf_output)
+            add_annotation_to_page(annotation1, pdf_output.getPage(page_num), pdf_output)
+            add_annotation_to_page(annotation2, pdf_output.getPage(page_num), pdf_output)
           else:
             create_training_set(tensors, predicted)
 
@@ -210,4 +211,4 @@ def run(file_path,
 if __name__ == "__main__":
   run()
 
-__version__ = '0.5.4'
+__version__ = '0.5.5'
